@@ -1,0 +1,26 @@
+function [data] = addothermetric(data)
+
+for i = 1 : numel(data)
+	A = sort(data(i).A, 'descend');
+
+	% TOPN: 
+	if numel(A) >= 3
+		data(i).topn = mean(A(1:3));
+	else
+		data(i).topn = mean(A);
+	end
+
+	%iBaq:
+	peptides = cleave(data(i).sequence, 'trypsin');
+	if numel(peptides) > 0
+		data(i).ibaq = sum(A) / numel(peptides);
+	else
+		error('addothermetric: number of theoretic peptides needs to be greater than zero.\n');
+	end
+	
+	%geomean:
+	data(i).gm = geomean(A);
+
+	%meanint;
+	data(i).meanint = mean(A);
+end
